@@ -10,42 +10,13 @@ export default function UploadUsers() {
   const [validIndex, setValidIndex] = useState([]);
   const [notValidIndex, setNotValidIndex] = useState([]);
 
-  // function handleFile(file /*:File*/) {
-  //     /* Boilerplate to set up FileReader */
-  //     const reader = new FileReader();
-  //     const rABS = !!reader.readAsBinaryString;
-  //     reader.onload = e => {
-  //       /* Parse data */
-  //       const bstr = e.target.result;
-  //       const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
-  //       /* Get first worksheet */
-  //       const wsname = wb.SheetNames[0];
-  //       const ws = wb.Sheets[wsname];
-  //       /* Convert array of arrays */
-  //       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-  //       /* Update state */
-  //       setData(data);
-  //       debugger
-  //     };
-  //     if (rABS) reader.readAsBinaryString(file);
-  //     else reader.readAsArrayBuffer(file);
-  //   }
-
-  //   function handleChange(e) {
-  //     const files = e.target.files;
-  //     if (files && files[0]) handleFile(files[0]);
-  //   }
-
-  //   const make_cols = refstr => {
-  //     let o = [],
-  //       C = XLSX.utils.decode_range(refstr).e.c + 1;
-  //     for (var i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i };
-  //     return o;
-  //   };
-
   String.prototype.splice = function (idx, rem, str) {
     return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
   };
+
+  function clearInput(e) {
+    e.target.value = null;
+  }
 
   function filePathset(e) {
     e.stopPropagation();
@@ -104,7 +75,6 @@ export default function UploadUsers() {
   }
 
   function convertToJson(csv) {
-    debugger
     var lines = csv.replaceAll('.00', '').split("\n");
 
     var result = [];
@@ -151,7 +121,7 @@ export default function UploadUsers() {
 
   return (
     <>
-      <input type="file" onChange={filePathset} />
+      <input type="file" onChange={filePathset} onClick={clearInput}/>
       {validIndex.length > 0 && <div>סה"כ אשראי תקינים: {validIndex.length}</div>}
       {notValidIndex.length > 0 && <div>סה"כ אשראי לא תקינים: {notValidIndex.length}</div>}
       {
@@ -167,6 +137,7 @@ export default function UploadUsers() {
           <div>מספרי שורות של אשראי לא תקינים</div>
           {notValidIndex.map(x => <span>{x}, </span>)}
         </div>
-      }    </>
+      }
+    </>
   )
 }
