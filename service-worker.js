@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/ValidateExcelCreditCards/precache-manifest.9ad37031cd84dc2c244e753264ade838.js"
+  "/ValidateExcelCreditCards/precache-manifest.21d51032b4a7f66e815d99b46ebd2439.js"
 );
 
 self.addEventListener('message', (event) => {
