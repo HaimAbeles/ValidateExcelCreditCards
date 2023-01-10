@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "3b10f330818c40d736d1d872994b689f",
+    "revision": "5975230e23520b073c7d78194cb0a9ac",
     "url": "/ValidateExcelCreditCards/index.html"
   },
   {
-    "revision": "0b1a676f69af6a43f06f",
+    "revision": "afd8306649d8b9ec1ce5",
     "url": "/ValidateExcelCreditCards/static/css/main.3ca16d9b.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/ValidateExcelCreditCards/static/js/3.79a04dbb.chunk.js"
   },
   {
-    "revision": "0b1a676f69af6a43f06f",
-    "url": "/ValidateExcelCreditCards/static/js/main.3ce8609c.chunk.js"
+    "revision": "afd8306649d8b9ec1ce5",
+    "url": "/ValidateExcelCreditCards/static/js/main.db4d1b7c.chunk.js"
   },
   {
     "revision": "7af2b34123d5b0381433",
