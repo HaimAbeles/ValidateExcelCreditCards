@@ -9,6 +9,7 @@ export default function UploadUsers() {
   const [data, setData] = useState();
   const [validIndex, setValidIndex] = useState([]);
   const [notValidIndex, setNotValidIndex] = useState([]);
+  const [validAndNotClubsIndex, setValidAndNotClubsIndex] = useState([]);
 
   String.prototype.splice = function (idx, rem, str) {
     return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
@@ -32,13 +33,16 @@ export default function UploadUsers() {
   useEffect(() => {
     if (!data) return;
     console.log(JSON.stringify(data));
-    let valid = 0, notValid = 0;
-    let validIndex = [], notValidIndex = [];
+    let valid = 0, notValid = 0, validAndNotClubs = 0;
+    let validIndex = [], notValidIndex = [], validAndNotClubsIndex = [];
     data.forEach((x, i) => {
-      var test = ValidateCreditCard(x.CARD_NUM);
+      var test = checkLuhn(x.CARD_NUM);
       if (test) {
         ++valid;
         validIndex.push(i + 2);
+        test = validateCardNo(x.CARD_NUM);
+        if (!test)
+          validAndNotClubsIndex.push(i + 2)
       }
       else {
         ++notValid;
@@ -47,28 +51,31 @@ export default function UploadUsers() {
     });
     console.log('valid', valid)
     console.log('notValid', notValid)
+    console.log('validAndNotClubs', validAndNotClubs)
     console.log('validIndex', validIndex);
     console.log('notValidIndex', notValidIndex);
+    console.log('validAndNotClubsIndex', validAndNotClubsIndex);
     setValidIndex(validIndex);
     setNotValidIndex(notValidIndex);
+    setValidAndNotClubsIndex(validAndNotClubsIndex);
   }, [data]);
 
-  var ValidateCreditCard = function (cardNo) {
-    if(cardNo === '') return false;
-    var s = 0;
-    var doubleDigit = false;
-    for (var i = cardNo.length - 1; i >= 0; i--) {
-      var digit = +cardNo[i];
-      if (doubleDigit) {
-        digit *= 2;
-        if (digit > 9)
-          digit -= 9;
-      }
-      s += digit;
-      doubleDigit = !doubleDigit;
-    }
-    return s % 10 == 0;
-  }
+  // var ValidateCreditCard = function (cardNo) {
+  //   if(cardNo === '') return false;
+  //   var s = 0;
+  //   var doubleDigit = false;
+  //   for (var i = cardNo.length - 1; i >= 0; i--) {
+  //     var digit = +cardNo[i];
+  //     if (doubleDigit) {
+  //       digit *= 2;
+  //       if (digit > 9)
+  //         digit -= 9;
+  //     }
+  //     s += digit;
+  //     doubleDigit = !doubleDigit;
+  //   }
+  //   return s % 10 == 0;
+  // }
 
   function readFile() {
     if (!fileValue) return;
@@ -112,40 +119,49 @@ export default function UploadUsers() {
     return result; //JSON
   }
 
-  // var validateCardNo = function (no) {
-  //   return (no && checkLuhn(no) &&
-  //     no.length == 16 && (no[0] == 4 || no[0] == 5 && no[1] >= 1 && no[1] <= 5 ||
-  //       (no.indexOf("6011") == 0 || no.indexOf("65") == 0)) ||
-  //     no.length == 15 && (no.indexOf("34") == 0 || no.indexOf("37") == 0) ||
-  //     no.length == 13 && no[0] == 4)
-  // }
+  var validateCardNo = function (no) {
+    return (no && checkLuhn(no) &&
+      no.length == 16 && (no[0] == 4 || no[0] == 5 && no[1] >= 1 && no[1] <= 5 ||
+        (no.indexOf("6011") == 0 || no.indexOf("65") == 0)) ||
+      no.length == 15 && (no.indexOf("34") == 0 || no.indexOf("37") == 0) ||
+      no.length == 13 && no[0] == 4)
+  }
 
-  // var checkLuhn = function (cardNo) {
-  //   var s = 0;
-  //   var doubleDigit = false;
-  //   for (var i = cardNo.length - 1; i >= 0; i--) {
-  //     var digit = +cardNo[i];
-  //     if (doubleDigit) {
-  //       digit *= 2;
-  //       if (digit > 9)
-  //         digit -= 9;
-  //     }
-  //     s += digit;
-  //     doubleDigit = !doubleDigit;
-  //   }
-  //   return s % 10 == 0;
-  // }
+  var checkLuhn = function (cardNo) {
+    if(cardNo === '') return false;
+    var s = 0;
+    var doubleDigit = false;
+    for (var i = cardNo.length - 1; i >= 0; i--) {
+      var digit = +cardNo[i];
+      if (doubleDigit) {
+        digit *= 2;
+        if (digit > 9)
+          digit -= 9;
+      }
+      s += digit;
+      doubleDigit = !doubleDigit;
+    }
+    return s % 10 == 0;
+  }
 
   return (
     <>
       <input type="file" onChange={filePathset} onClick={clearInput} />
       {validIndex.length > 0 && <div>סה"כ אשראי תקינים: {validIndex.length}</div>}
+      {validIndex.length > 0 && <div>סה"כ אשראי תקינים אבל ללא התאמה לחברת אשראי: {validAndNotClubsIndex.length}</div>}
       {notValidIndex.length > 0 && <div>סה"כ אשראי לא תקינים: {notValidIndex.length}</div>}
       {
         validIndex.length > 0 &&
         <div className="conteinarResult">
           <div>מספרי שורות של אשראי תקינים</div>
           {validIndex.map(x => <span>{x}, </span>)}
+        </div>
+      }
+      {
+        validIndex.length > 0 &&
+        <div className="conteinarResult">
+          <div>מספרי שורות של אשראי תקינים  אבל ללא התאמה לחברת אשראי</div>
+          {validAndNotClubsIndex.map(x => <span>{x}, </span>)}
         </div>
       }
       {
