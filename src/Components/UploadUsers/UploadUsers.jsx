@@ -35,7 +35,7 @@ export default function UploadUsers() {
     let valid = 0, notValid = 0;
     let validIndex = [], notValidIndex = [];
     data.forEach((x, i) => {
-      var test = validateCardNo(x.CARD_NUM);
+      var test = ValidateCreditCard(x.CARD_NUM);
       if (test) {
         ++valid;
         validIndex.push(i + 2);
@@ -52,6 +52,23 @@ export default function UploadUsers() {
     setValidIndex(validIndex);
     setNotValidIndex(notValidIndex);
   }, [data]);
+
+  var ValidateCreditCard = function (cardNo) {
+    if(cardNo === '') return false;
+    var s = 0;
+    var doubleDigit = false;
+    for (var i = cardNo.length - 1; i >= 0; i--) {
+      var digit = +cardNo[i];
+      if (doubleDigit) {
+        digit *= 2;
+        if (digit > 9)
+          digit -= 9;
+      }
+      s += digit;
+      doubleDigit = !doubleDigit;
+    }
+    return s % 10 == 0;
+  }
 
   function readFile() {
     if (!fileValue) return;
@@ -95,33 +112,33 @@ export default function UploadUsers() {
     return result; //JSON
   }
 
-  var validateCardNo = function (no) {
-    return (no && checkLuhn(no) &&
-      no.length == 16 && (no[0] == 4 || no[0] == 5 && no[1] >= 1 && no[1] <= 5 ||
-        (no.indexOf("6011") == 0 || no.indexOf("65") == 0)) ||
-      no.length == 15 && (no.indexOf("34") == 0 || no.indexOf("37") == 0) ||
-      no.length == 13 && no[0] == 4)
-  }
+  // var validateCardNo = function (no) {
+  //   return (no && checkLuhn(no) &&
+  //     no.length == 16 && (no[0] == 4 || no[0] == 5 && no[1] >= 1 && no[1] <= 5 ||
+  //       (no.indexOf("6011") == 0 || no.indexOf("65") == 0)) ||
+  //     no.length == 15 && (no.indexOf("34") == 0 || no.indexOf("37") == 0) ||
+  //     no.length == 13 && no[0] == 4)
+  // }
 
-  var checkLuhn = function (cardNo) {
-    var s = 0;
-    var doubleDigit = false;
-    for (var i = cardNo.length - 1; i >= 0; i--) {
-      var digit = +cardNo[i];
-      if (doubleDigit) {
-        digit *= 2;
-        if (digit > 9)
-          digit -= 9;
-      }
-      s += digit;
-      doubleDigit = !doubleDigit;
-    }
-    return s % 10 == 0;
-  }
+  // var checkLuhn = function (cardNo) {
+  //   var s = 0;
+  //   var doubleDigit = false;
+  //   for (var i = cardNo.length - 1; i >= 0; i--) {
+  //     var digit = +cardNo[i];
+  //     if (doubleDigit) {
+  //       digit *= 2;
+  //       if (digit > 9)
+  //         digit -= 9;
+  //     }
+  //     s += digit;
+  //     doubleDigit = !doubleDigit;
+  //   }
+  //   return s % 10 == 0;
+  // }
 
   return (
     <>
-      <input type="file" onChange={filePathset} onClick={clearInput}/>
+      <input type="file" onChange={filePathset} onClick={clearInput} />
       {validIndex.length > 0 && <div>סה"כ אשראי תקינים: {validIndex.length}</div>}
       {notValidIndex.length > 0 && <div>סה"כ אשראי לא תקינים: {notValidIndex.length}</div>}
       {
